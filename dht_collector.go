@@ -42,6 +42,7 @@ func (c dhtCollector) Collect(ch chan<- prometheus.Metric) {
 		fmt.Fprintln(os.Stderr, "error getting sensor data", err)
 		ch <- prometheus.MustNewConstMetric(upDesc, prometheus.GaugeValue, 0)
 	} else {
+		ch <- prometheus.MustNewConstMetric(upDesc, prometheus.GaugeValue, 1)
 		ch <- prometheus.MustNewConstMetric(tempDesc, prometheus.GaugeValue, float64(temperature))
 		ch <- prometheus.MustNewConstMetric(humidityDesc, prometheus.GaugeValue, float64(humidity))
 	}
