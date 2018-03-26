@@ -3,22 +3,31 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
+	yaml "gopkg.in/yaml.v2"
 )
 
 const version string = "0.1"
+
+type List struct {
+	Names map[string]string
+}
 
 var (
 	showVersion   = flag.Bool("version", false, "Print version information.")
 	listenAddress = flag.String("listen-address", ":9330", "Address on which to expose metrics.")
 	metricsPath   = flag.String("path", "/metrics", "Path under which to expose metrics.")
 	device        = flag.Int("device", 22, "Sensor type, either 11 or 22 for DHT11/DHT22")
-	gpio          = flag.Int("gpio", 4, "GPIO connected to the sensors (not pin number)")
+	nameFile      = flag.String("names", "names.yaml", "File mapping GPIOs to names")
+
+	list List
 )
 
 func init() {
@@ -35,6 +44,18 @@ func main() {
 	if *showVersion {
 		printVersion()
 		os.Exit(0)
+	}
+
+	filename, _ := filepath.Abs(*nameFile)
+	yamlFile, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		log.Fatal("Can't read names file")
+	}
+
+	err = yaml.Unmarshal(yamlFile, &list)
+	if err != nil {
+		log.Fatal("Can't read names file")
 	}
 
 	startServer()
