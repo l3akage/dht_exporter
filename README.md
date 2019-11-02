@@ -42,5 +42,5 @@ dht_up{location="dht_sensor_01"} 1
 # Circuit
 Connect pin1 to 3.3V, pin2 with a pull-up resistor (4.7k – 10kΩ) to a gpio pin (i used 4.7k and gpio 4) and pin4 to GND on the PI.
 
-![Circuit](https://m0u.de/assets/dht22_circuit.svg)
+![Circuit](dht22_circuit.svg)
 
